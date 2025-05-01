@@ -1,0 +1,92 @@
+services:
+  serveo:
+    build: 
+      context: .
+      dockerfile: serveo.Dockerfile
+    volumes:
+      - /root/.ssh
+      - /run/user/$(id -u)/ssh-auth.sock:/ssh-agent
+    environment:
+      SSH_AUTH_SOCK: /ssh-agent
+
+  backend:
+    build: 
+      context: .
+      dockerfile: backend/Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      webhook:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+  
+  bot:
+    build:
+      context: .
+      dockerfile: bot/Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      webhook:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+  
+  webhook:
+    build:
+      context: .
+      dockerfile: webhook/Dockerfile
+    # healthcheck: &healthcheck
+    #   interval: 5s
+    #   timeout: 5s
+    #   retries: 5
+    ports:
+      - 8080:8080
+    env_file:
+      - .env
+  
+  postgres:
+    image: postgres:latest
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1G
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "$POSTGRES_USER", "-d", "$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+  
+  redis:
+    image: redis:latest
+    # command: --requirepass ${REDIS_PASSWORD}
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "$REDIS_PASSWORD", "ping"]
+      start_period: 1s
+    restart: unless-stopped
+    ports:
+      - 6380:${REDIS_PORT}
+    env_file:
+      - .env
+
+volumes:
+  pgdata:
+    # driver: local
+
+# networks:
+#   network:
+#     driver: bridge
