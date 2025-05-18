@@ -8,20 +8,19 @@ services:
       - /run/user/$(id -u)/ssh-auth.sock:/ssh-agent
     environment:
       SSH_AUTH_SOCK: /ssh-agent
-
-  backend:
-    build: 
+  
+  webhook:
+    build:
       context: .
-      dockerfile: backend/Dockerfile
+      dockerfile: webhook/Dockerfile
+    # healthcheck: &healthcheck
+    #   interval: 5s
+    #   timeout: 5s
+    #   retries: 5
+    ports:
+      - 5000:5000
     env_file:
       - .env
-    depends_on:
-      webhook:
-        condition: service_started
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
   
   bot:
     build:
@@ -37,16 +36,30 @@ services:
       redis:
         condition: service_healthy
   
-  webhook:
-    build:
+  backend:
+    build: 
       context: .
-      dockerfile: webhook/Dockerfile
-    # healthcheck: &healthcheck
-    #   interval: 5s
-    #   timeout: 5s
-    #   retries: 5
+      dockerfile: backend/Dockerfile
     ports:
-      - 8080:8080
+      - 4000:4000
+    env_file:
+      - .env
+    depends_on:
+      webhook:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+  
+  frontend:
+    build: 
+      context: .
+      dockerfile: frontend/Dockerfile
+    volumes:
+      - /frontend/node_modules
+    ports:
+      - 3000:3000
     env_file:
       - .env
   
