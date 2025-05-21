@@ -14,11 +14,11 @@ router = APIRouter()
 
 
 @router.get('/healthcheck', responses={200: {'content': {'application/json': {'example': 'OK'}}}})
-async def healthcheck():
+async def _():
     return 'OK'
 
 @router.post('/telegram')
-async def telegram_webhook(request: Request) -> None:
+async def _(request: Request) -> None:
     # 149.154.160.0/20
     # 91.108.4.0/22
     data = await request.json()

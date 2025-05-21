@@ -12,6 +12,9 @@ from utils.config import config
 
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
+        if not request.url.path.startswith("/user"):
+            return await call_next(request)
+        
         try:
             init_data = request.headers.get('initData')
             parsed_data = dict(parse_qsl(init_data))

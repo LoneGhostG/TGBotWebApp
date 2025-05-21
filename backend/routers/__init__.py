@@ -1,12 +1,12 @@
-from fastapi import APIRouter
+from fastapi import FastAPI, APIRouter
 
-from . import common
+from . import common, user
+from middlewares import AuthMiddleware
 
 
-router = APIRouter(prefix='/api')
+router = APIRouter()
 
-router.include_router(
-    common.router
-)
+router.include_router(common.router)
+router.include_router(user.router)
 
-__all__ = ('router')
+__all__ = ('router', 'app')
