@@ -36,7 +36,7 @@ async def start_bot():
     async def bot_webhook():
         logging.info("Bot started with webhook")
         await bot.set_webhook(
-            url=f'{config.webhook_url}/webhook/telegram',
+            url=f'{config.webhook_url}/telegram',
             secret_token=config.webhook_secret.get_secret_value(),
             allowed_updates=dp.resolve_used_update_types(),
             drop_pending_updates=True

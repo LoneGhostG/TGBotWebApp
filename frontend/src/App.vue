@@ -6,10 +6,11 @@ import { useFetch } from "@vueuse/core";
 const { initData, initDataUnsafe, sendData, ready, close } = useWebApp();
 const user = initDataUnsafe.user || {};
 
-const { data, error } = useFetch('https://lg1447-tgbotwebapp-test-backend.serveo.net/api/user', {
+const { data, error } = useFetch('/api/user', {
   mode: 'cors',
-  method: 'POST',
-  headers:{'Content-Type': 'application/json', 'initData': initData}
+  method: 'GET',
+  headers:{'Content-Type': 'application/json', 'initData': initData},
+  credentials: 'include'
 });
 
 
