@@ -17,7 +17,7 @@ router = APIRouter()
 async def healthcheck():
     return 'OK'
 
-@router.post('/webhook/telegram')
+@router.post('/telegram')
 async def telegram_webhook(request: Request) -> None:
     # 149.154.160.0/20
     # 91.108.4.0/22

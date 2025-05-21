@@ -1,10 +1,9 @@
 from fastapi import APIRouter
-from dishka.integrations.fastapi import DishkaRoute
 
 from . import common
 
 
-router = APIRouter(route_class=DishkaRoute)
+router = APIRouter(prefix='/api')
 
 router.include_router(
     common.router

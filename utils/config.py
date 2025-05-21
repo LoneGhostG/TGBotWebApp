@@ -16,7 +16,7 @@ class Config(BaseSettings):
     webhook_port: int = 5000
     
     backend_host: str = 'backend'
-    backend_port: int = 4000
+    backend_port: int = 8000
     
     postgres_db: str
     postgres_host: str

@@ -1,6 +1,6 @@
 import logging
 
-from aiogram import Router
+from aiogram import Router, F
 from aiogram.types import Message
 from aiogram.filters import Command
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -42,6 +42,13 @@ async def _(
 ):
     logging.debug('User handler')
     await message.answer(f'Your username {user.username}!')
+
+
+@router.message(F.content_type == 'web_app_data')
+async def _(
+    message: Message
+):
+    logging.debug(message.web_app_data)
 
 
 @router.message()

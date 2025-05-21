@@ -1,18 +1,34 @@
 <script setup>
 import { useWebApp } from 'vue-tg'
+import { Alert } from 'vue-tg'
 import { useFetch } from "@vueuse/core";
 
-const { initData, initDataUnsafe, close } = useWebApp()
+const { initData, initDataUnsafe, sendData, ready, close } = useWebApp();
 const user = initDataUnsafe.user || {};
 
-const { data, isFetching, error } = useFetch(`https://lg1447-tgbotwebapp-test-backend.serveo.net/api/user?${new URLSearchParams({user_id: user.id}).toString()}`, {headers:{'Authorization': initData}})
+const { data, error } = useFetch('https://lg1447-tgbotwebapp-test-backend.serveo.net/api/user', {
+  mode: 'cors',
+  method: 'POST',
+  headers:{'Content-Type': 'application/json', 'initData': initData}
+});
+
+
+if (error.value) {
+  close();
+} else {
+  ready();
+  sendData('test');
+}
+
+
 </script>
 
 <template>
   <div>
     <h1>Telegram Mini App</h1>
     <p v-if="user">User ID: {{ user?.id }}</p>
-    <button class="tg-button" @click="close()">Close</button>
+    <p v-if="error">Error: {{ error }}</p>
+    <button class="tg-button" @click="sendData('test button')">Close</button>
   </div>
 </template>
 

@@ -20,10 +20,11 @@ class DatabaseProvider(Provider):
         async with async_session() as session:
             yield session
 
+
 class UserProvider(Provider):
     scope = Scope.REQUEST
     
-    event = from_context(provides=TelegramObject, scope=Scope.REQUEST)
+    event = from_context(provides=TelegramObject)
     
     @provide
     async def provide_user(self, session: AsyncSession, event: TelegramObject) -> UserModel:

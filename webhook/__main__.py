@@ -12,7 +12,11 @@ logging.basicConfig(level=logging.DEBUG)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['*'],
+    allow_origins=[
+        '*',
+        config.webapp_url,
+        "https://web.telegram.org",
+    ],
     allow_credentials=True,
     allow_methods=['*'],
     allow_headers=['*'],

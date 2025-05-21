@@ -1,6 +1,5 @@
 pydantic
 pydantic-settings
-dishka
 asyncpg
 sqlalchemy[asyncio]
 redis

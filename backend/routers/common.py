@@ -1,9 +1,12 @@
 import logging
+from typing import Annotated
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Depends
 import json
 
+from dependencies import SessionDep, UserDep
 from utils.config import config
+from utils.db.models import UserModel
 from utils.redis import rdb
 
 
@@ -15,7 +18,6 @@ async def healthcheck():
     return 'OK'
 
 @router.get('/api/user')
-async def telegram_webhook(request: Request, user_id: int) -> None:
-    logging.debug(user_id)
-    return 
-    ...
+async def telegram_webhook(request: Request, user: UserDep) -> str:
+    logging.debug((user.username, request.state.user_data.get('first_name')))
+    return 'Test'
