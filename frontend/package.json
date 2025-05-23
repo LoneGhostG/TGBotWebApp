@@ -11,7 +11,7 @@
   "dependencies": {
     "@vueuse/core": "^13.1.0",
     "vue": "^3.5.13",
-    "vue-tg": "^0.8.0"
+    "vue-tg": "^0.9.0-beta.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.3",

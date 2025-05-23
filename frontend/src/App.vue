@@ -1,26 +1,33 @@
 <script setup>
-import { useWebApp } from 'vue-tg'
-import { Alert } from 'vue-tg'
+import { ref } from 'vue';
+import { useMiniApp, usePopup } from 'vue-tg';
 import { useFetch } from "@vueuse/core";
 
-const { initData, initDataUnsafe, sendData, ready, close } = useWebApp();
-const user = initDataUnsafe.user || {};
+const miniApp = useMiniApp();
+// { initData, initDataUnsafe, sendData, ready, close }
+const popup = usePopup();
+const user = miniApp.initDataUnsafe.user || {};
 
 const { data, error } = useFetch('/api/user', {
   mode: 'cors',
   method: 'GET',
-  headers:{'Content-Type': 'application/json', 'initData': initData},
+  headers:{'Content-Type': 'application/json', 'initData': miniApp.initData},
   credentials: 'include'
 });
 
 
 if (error.value) {
-  close();
+  miniApp.close();
 } else {
-  ready();
-  sendData('test');
+  miniApp.ready();
 }
 
+const test = ref('');
+
+async function buttonTest() {
+  await popup.showAlert('test')
+  test.value = 'Value';
+}
 
 </script>
 
@@ -29,7 +36,9 @@ if (error.value) {
     <h1>Telegram Mini App</h1>
     <p v-if="user">User ID: {{ user?.id }}</p>
     <p v-if="error">Error: {{ error }}</p>
-    <button class="tg-button" @click="sendData('test button')">Close</button>
+    <p v-if="test">Test: {{ test }}</p>
+    <button class="tg-button" @click="buttonTest">Test</button>
+    <!-- <Alert message="Test!" @close="Test" /> -->
   </div>
 </template>
 
